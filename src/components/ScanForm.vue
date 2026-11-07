@@ -63,7 +63,6 @@ defineExpose({ submit });
           v-model="checkDeps"
           type="checkbox"
           role="switch"
-          :aria-checked="checkDeps"
           class="peer sr-only"
           data-testid="check-deps"
         />

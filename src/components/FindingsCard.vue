@@ -2,12 +2,12 @@
 import { computed, onBeforeUnmount, ref } from "vue";
 import { Check, CircleCheck, Copy } from "@lucide/vue";
 import { CATEGORIES, SEVERITIES } from "../api/types";
-import type { Category, Finding, Severity } from "../api/types";
+import type { Category, Finding, ScanSummary, Severity } from "../api/types";
 import { CATEGORY_LABEL, SEVERITY_LABEL } from "../lib/labels";
 import { copyText } from "../lib/prompts";
 import SeverityBadge from "./SeverityBadge.vue";
 
-const props = defineProps<{ findings: readonly Finding[]; truncated?: boolean }>();
+const props = defineProps<{ findings: readonly Finding[]; summary: ScanSummary; truncated?: boolean }>();
 
 const category = ref<Category | null>(null);
 const severity = ref<Severity | null>(null);
@@ -21,16 +21,11 @@ const filtered = computed(() =>
   ),
 );
 
-const countByCategory = computed(() => {
-  const out = { SECRET: 0, HIDDEN_UNICODE: 0, SLOPSQUATTING: 0, INSECURE_CODE: 0 } as Record<Category, number>;
-  for (const f of props.findings) out[f.category]++;
-  return out;
-});
-const countBySeverity = computed(() => {
-  const out = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 } as Record<Severity, number>;
-  for (const f of props.findings) out[f.severity]++;
-  return out;
-});
+// Totais reais vêm do summary: a lista pode estar truncada (500 na API, 100 no histórico).
+const countByCategory = computed(() => props.summary.by_category);
+const countBySeverity = computed(() => props.summary.by_severity);
+const totalReal = computed(() => SEVERITIES.reduce((n, s) => n + (props.summary.by_severity[s] ?? 0), 0));
+const isPartial = computed(() => props.truncated === true || props.findings.length < totalReal.value);
 
 function toggleCategory(c: Category | null) {
   category.value = category.value === c ? null : c;
@@ -64,9 +59,17 @@ const chipOn = "bg-ink text-card";
     <div class="flex flex-wrap items-baseline justify-between gap-2">
       <h2 id="findings-title" class="text-xl font-semibold tracking-tight">Achados</h2>
       <p class="text-sm text-muted">
-        {{ filtered.length }} de {{ findings.length }}<span v-if="truncated"> (lista truncada em 500)</span>
+        {{ filtered.length }} de {{ findings.length }} na lista
       </p>
     </div>
+    <p
+      v-if="isPartial && findings.length > 0"
+      data-testid="truncated-notice"
+      class="mt-3 rounded-2xl border border-sev-medium px-4 py-2 text-sm font-medium text-sev-medium"
+    >
+      Mostrando os {{ findings.length }} achados mais graves de {{ totalReal }}. Os contadores dos filtros mostram o total
+      real; os filtros agem só sobre a lista.
+    </p>
 
     <template v-if="findings.length > 0">
       <div class="mt-4 space-y-3">

@@ -59,3 +59,7 @@ Hash simples, sem vue-router: `#/scan`, `#/historico`, `#/metodologia`. O histó
 Tokens com contraste AA (`src/style.css`, `@theme`), foco visível de 2 px com offset, alvos de 44 px ou mais,
 severidade sempre com ícone + texto, `aria-pressed` nos filtros, `aria-live` no "Copiado", e
 `prefers-reduced-motion` desliga as animações. Em telas de até 767 px o trilho vira barra inferior fixa.
+
+## Créditos
+
+Inspiração visual: shot "Fintech Web App UI Design" de Ronas IT no Dribbble (https://dribbble.com/shots/26042215-Fintech-Web-App-UI-Design).

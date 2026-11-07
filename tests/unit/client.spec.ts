@@ -69,6 +69,9 @@ describe("scanRepo", () => {
     [400, "INVALID_REPO_URL"],
     [400, "INVALID_BODY"],
     [404, "REPO_NOT_FOUND"],
+    [404, "NOT_FOUND"],
+    [405, "METHOD_NOT_ALLOWED"],
+    [503, "SERVER_BUSY"],
     [413, "REPO_TOO_LARGE"],
     [429, "RATE_LIMITED"],
     [502, "UPSTREAM_ERROR"],
@@ -82,6 +85,10 @@ describe("scanRepo", () => {
     expect(err.code).toBe(code);
     expect(err.status).toBe(status);
     expect(err.message).toBe(ERROR_MESSAGES[code]);
+  });
+
+  it("SERVER_BUSY tem a mensagem pedida", () => {
+    expect(ERROR_MESSAGES.SERVER_BUSY).toBe("Servidor ocupado com outros scans. Tente de novo em alguns segundos.");
   });
 
   it("corpo de erro fora do formato vira UNKNOWN com status", async () => {

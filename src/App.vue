@@ -95,7 +95,7 @@ const activeId = computed(() => result.value?.scan_id ?? null);
 
         <div v-else-if="status === 'success' && result" class="bento" data-testid="result">
           <HeroScore class="area-hero" :result="result" />
-          <FindingsCard :key="result.scan_id" class="area-findings" :findings="result.findings" :truncated="result.truncated" />
+          <FindingsCard :key="result.scan_id" class="area-findings" :findings="result.findings" :summary="result.summary" :truncated="result.truncated" />
           <DonutCard class="area-donut" :summary="result.summary" />
           <CopyAllCard class="area-cta" :findings="result.findings" />
           <MetricsCard class="area-metrics" :result="result" />
