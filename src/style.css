@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/* Tokens do VibeShield (contraste AA verificado). Componentes usam só estas classes, nunca hex solto. */
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
+
+  --color-shell: #0a0a0b;
+  --color-rail: #1c1c1f;
+
+  --color-card: #ffffff;
+  --color-ink: #111113;
+  --color-muted: #5b5b66;
+  --color-subtle: #f2f2f4; /* fundo de chip/snippet em card claro (não carrega texto colorido) */
+
+  --color-card-dark: #232326;
+  --color-ink-dark: #f4f4f5;
+  --color-muted-dark: #a1a1aa;
+  --color-line-dark: #3a3a40; /* trilho de barra / borda em card escuro */
+
+  --color-hero-from: #be185d;
+  --color-hero-to: #c2410c;
+  --color-on-hero: #ffffff;
+  --color-on-hero-muted: #ffe4ec;
+
+  --color-cta: #fde047;
+  --color-on-cta: #111113;
+  --color-logo: #e11d48;
+
+  --color-sev-critical: #be123c;
+  --color-sev-high: #c2410c;
+  --color-sev-medium: #a16207;
+  --color-sev-low: #0369a1;
+  --color-ok: #15803d;
+
+  --color-sev-critical-dark: #fb7185;
+  --color-sev-high-dark: #fb923c;
+  --color-sev-medium-dark: #fbbf24;
+  --color-sev-low-dark: #38bdf8;
+  --color-ok-dark: #4ade80;
+
+  --radius-card: 28px;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-shell);
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-shell);
+    color: var(--color-ink-dark);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Foco visível: anel de 2px com offset; a cor segue a superfície. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring, var(--color-ink-dark));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .surface-light {
+    --focus-ring: var(--color-ink);
+    background-color: var(--color-card);
+    color: var(--color-ink);
+  }
+  .surface-dark {
+    --focus-ring: var(--color-ink-dark);
+    background-color: var(--color-card-dark);
+    color: var(--color-ink-dark);
+  }
+  .surface-hero {
+    --focus-ring: var(--color-on-hero);
+    background-image: linear-gradient(135deg, var(--color-hero-from), var(--color-hero-to));
+    color: var(--color-on-hero);
+  }
+
+  /* Bento: 1 coluna (mobile) → 2 (md) → 3 com áreas (xl). */
+  .bento {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 768px) {
+    .bento {
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "hero donut"
+        "findings findings"
+        "cta metrics"
+        "history history";
+    }
+  }
+  @media (min-width: 1280px) {
+    .bento {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 4fr) minmax(0, 4fr);
+      grid-template-areas:
+        "hero findings findings"
+        "donut findings findings"
+        "cta metrics history";
+    }
+    .findings-scroll {
+      /* relative: segura os .sr-only (absolute) dentro do contêiner rolável, senão eles esticam a página */
+      position: relative;
+      max-height: 34rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+  @media (min-width: 768px) {
+    .area-hero { grid-area: hero; }
+    .area-findings { grid-area: findings; }
+    .area-donut { grid-area: donut; }
+    .area-cta { grid-area: cta; }
+    .area-metrics { grid-area: metrics; }
+    .area-history { grid-area: history; }
+  }
+
+  .skeleton {
+    background-color: currentColor;
+    opacity: 0.12;
+    border-radius: 12px;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  50% { opacity: 0.22; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

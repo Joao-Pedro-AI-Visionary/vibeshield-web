@@ -1,0 +1,94 @@
+{
+  "scan_id": "6f1c2a9e-3b7d-4c1e-9a52-0d8e7f4b1c23",
+  "repo": { "owner": "acme", "name": "vibe-app", "url": "https://github.com/acme/vibe-app" },
+  "score": 42,
+  "grade": "F",
+  "files_scanned": 143,
+  "files_skipped": 4,
+  "bytes_downloaded": 812345,
+  "duration_ms": 1830,
+  "truncated": false,
+  "summary": {
+    "by_severity": { "CRITICAL": 1, "HIGH": 2, "MEDIUM": 3, "LOW": 1 },
+    "by_category": { "SECRET": 2, "HIDDEN_UNICODE": 1, "SLOPSQUATTING": 1, "INSECURE_CODE": 3 }
+  },
+  "findings": [
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000001",
+      "rule_id": "unicode.bidi",
+      "category": "HIDDEN_UNICODE",
+      "severity": "CRITICAL",
+      "file": "src/auth/guard.ts",
+      "line": 27,
+      "snippet": "if (isAdmin <U+202E> && user.role) {",
+      "description": "Caractere de controle bidirecional (Trojan Source) pode esconder lógica diferente da que aparece na tela.",
+      "fix_prompt": "No arquivo src/auth/guard.ts, linha 27, remova o caractere Unicode invisível U+202E e reescreva a condição de forma explícita. Explique o que mudou."
+    },
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000002",
+      "rule_id": "secret.high-entropy",
+      "category": "SECRET",
+      "severity": "HIGH",
+      "file": "src/config.ts",
+      "line": 12,
+      "snippet": "const apiKey = \"sk_l…9f2a\"",
+      "description": "Possível segredo de alta entropia atribuído a uma variável sugestiva.",
+      "fix_prompt": "No arquivo src/config.ts, linha 12, mova o segredo para uma variável de ambiente, leia com process.env e revogue a chave exposta."
+    },
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000003",
+      "rule_id": "deps.not-found",
+      "category": "SLOPSQUATTING",
+      "severity": "HIGH",
+      "file": "package.json",
+      "line": 18,
+      "snippet": "\"react-super-validator\": \"^1.2.0\"",
+      "description": "O pacote não existe no npm: provável nome alucinado por IA (slopsquatting).",
+      "fix_prompt": "No package.json, linha 18, o pacote react-super-validator não existe no npm. Substitua por uma biblioteca real e mantida e ajuste os imports."
+    },
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000004",
+      "rule_id": "secret.high-entropy",
+      "category": "SECRET",
+      "severity": "MEDIUM",
+      "file": "scripts/deploy.sh",
+      "line": 4,
+      "snippet": "TOKEN=abcd…wxyz",
+      "description": "Token com entropia alta em script de deploy.",
+      "fix_prompt": "No arquivo scripts/deploy.sh, linha 4, leia o token de um secret do CI em vez de deixá-lo no código."
+    },
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000005",
+      "rule_id": "code.cors-wildcard",
+      "category": "INSECURE_CODE",
+      "severity": "MEDIUM",
+      "file": "server/index.js",
+      "line": 9,
+      "snippet": "app.use(cors({ origin: '*' }))",
+      "description": "CORS liberado para qualquer origem.",
+      "fix_prompt": "No arquivo server/index.js, linha 9, troque origin '*' por uma lista explícita de origens permitidas lida de variável de ambiente."
+    },
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000006",
+      "rule_id": "code.eval",
+      "category": "INSECURE_CODE",
+      "severity": "MEDIUM",
+      "file": "src/utils/calc.js",
+      "line": 33,
+      "snippet": "return eval(expression)",
+      "description": "Uso de eval com entrada potencialmente controlada pelo usuário.",
+      "fix_prompt": "No arquivo src/utils/calc.js, linha 33, substitua eval por um parser seguro de expressões e valide a entrada."
+    },
+    {
+      "id": "0b1e7a4c-1111-4a2b-8c3d-000000000007",
+      "rule_id": "code.dangerous-html",
+      "category": "INSECURE_CODE",
+      "severity": "LOW",
+      "file": "src/components/Post.vue",
+      "line": 5,
+      "snippet": "<div v-html=\"post.body\"></div>",
+      "description": "Renderização de HTML cru pode abrir espaço para XSS.",
+      "fix_prompt": "No arquivo src/components/Post.vue, linha 5, troque v-html por interpolação de texto ou sanitize o HTML com DOMPurify antes de renderizar."
+    }
+  ]
+}
